@@ -1,4 +1,6 @@
 
+const PROTO_SUFFIX = '//';
+
 class WhatUrl {
     protocol: string;
     username: string;
@@ -6,7 +8,7 @@ class WhatUrl {
     hostname: string;
     port: number | null;
     pathname: string;
-    query: Map<string, string>;
+    query: Map<string, string | number | boolean | null>;
     hash: string;
     constructor(whatUrlBuilder: WhatUrlBuilder) {
         this.protocol = whatUrlBuilder.protocol;
@@ -18,6 +20,9 @@ class WhatUrl {
         this.query = whatUrlBuilder.query;
         this.hash = whatUrlBuilder.hash;
     }
+    getOrigin() {
+        return this.protocol + PROTO_SUFFIX;
+    }
     getParam(key: string) {
         return this.query.get(key);
     }
@@ -25,7 +30,7 @@ class WhatUrl {
         let urlStr = '';
     
         if (this.protocol) {
-            urlStr = this.protocol + '//';
+            urlStr = this.protocol + PROTO_SUFFIX;
         }
 
         if (this.username) {
@@ -49,8 +54,12 @@ class WhatUrl {
         if (this.query.size > 0) {
             const paramArr: Array<string> = [];
             urlStr = urlStr + '?';
-            this.query.forEach((value: string, key: string) => {
-                paramArr.push(key + '=' + value);
+            this.query.forEach((value: string | number | boolean | null, key: string) => {
+                if (value === null) {
+                    paramArr.push(key + '=');
+                } else {
+                    paramArr.push(key + '=' + value);
+                }
             });
             urlStr = urlStr + paramArr.join('&');
         }
@@ -63,6 +72,10 @@ class WhatUrl {
     }
 }
 
+const parseQueryString = function (qs: string): Map<string, string | number | boolean | null> {
+    return new Map<string, string>();
+};
+
 class WhatUrlBuilder {
 
     private _protocol: string = '';
@@ -71,7 +84,7 @@ class WhatUrlBuilder {
     private _hostname: string = '';
     private _port: number | null = null;
     private _pathname: string = '';
-    private _query: Map<string, string> = new Map();
+    private _query: Map<string, string | number | boolean | null> = new Map();
     private _hash: string = '';
 
     constructor(whatUrl?: WhatUrl | string) {
@@ -85,11 +98,19 @@ class WhatUrlBuilder {
             this._query = whatUrl.query;
             this._hash = whatUrl.hash;
         } else if (typeof whatUrl === 'string') {
-            
+            const parsedUrl = new URL(whatUrl);
+            this._protocol = parsedUrl.protocol;
+            this._username = parsedUrl.username;
+            this._password = parsedUrl.password;
+            this._hostname = parsedUrl.hostname;
+            this._port = parseInt(parsedUrl.port, 10);
+            this._pathname = parsedUrl.pathname;
+            this._query = parseQueryString(parsedUrl.search);
+            this._hash = parsedUrl.hash;
         }
     }
 
-    addParam(key: string, value: string) {
+    addParam(key: string, value: string | number | boolean) {
         this._query.set(key, value);
         return this;
     }
