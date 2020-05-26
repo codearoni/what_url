@@ -35,8 +35,18 @@ Deno.test({
 Deno.test({
     name: 'Parses a fully populated url',
     fn(): void {
-        console.log(new URL('https://what:1234@deno.land:8080?x=hello_world&y=2&z=true#asdf'));
-        const url = new WhatUrlBuilder('https://what:1234@deno.land:8080?x=hello_world&y=2&z=true#asdf')
+        console.log(new URL('https://what:1234@deno.land:8080?x=hello_world&y=&z=true#asdf'));
+        const url = new WhatUrlBuilder('https://what:1234@deno.land:8080?x=hello_world&y=&z=true#asdf')
+
+        console.log(url);
+    }
+});
+
+Deno.test({
+    name: 'Parses a url',
+    fn(): void {
+        console.log(new URL('https://what:1234@deno.land:8080#asdf'));
+        const url = new WhatUrlBuilder('https://what:1234@deno.land:8080#asdf')
 
         console.log(url);
     }

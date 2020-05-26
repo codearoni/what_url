@@ -1,15 +1,17 @@
 
-const PROTO_SUFFIX = '//';
+type IQueryParam = string | number | boolean | null;
+type IQuery = Map<string, IQueryParam>
 
 class WhatUrl {
-    protocol: string;
-    username: string;
-    password: string;
-    hostname: string;
-    port: number | null;
-    pathname: string;
-    query: Map<string, string | number | boolean | null>;
-    hash: string;
+    private _protoSuffix = '//';
+    readonly protocol: string;
+    readonly username: string;
+    readonly password: string;
+    readonly hostname: string;
+    readonly port: number | null;
+    readonly pathname: string;
+    readonly query: IQuery;
+    readonly hash: string;
     constructor(whatUrlBuilder: WhatUrlBuilder) {
         this.protocol = whatUrlBuilder.protocol;
         this.username = whatUrlBuilder.username;
@@ -21,7 +23,7 @@ class WhatUrl {
         this.hash = whatUrlBuilder.hash;
     }
     getOrigin() {
-        return this.protocol + PROTO_SUFFIX;
+        return this.protocol + this._protoSuffix;
     }
     getParam(key: string) {
         return this.query.get(key);
@@ -30,7 +32,7 @@ class WhatUrl {
         let urlStr = '';
     
         if (this.protocol) {
-            urlStr = this.protocol + PROTO_SUFFIX;
+            urlStr = this.protocol + this._protoSuffix;
         }
 
         if (this.username) {
@@ -54,7 +56,7 @@ class WhatUrl {
         if (this.query.size > 0) {
             const paramArr: Array<string> = [];
             urlStr = urlStr + '?';
-            this.query.forEach((value: string | number | boolean | null, key: string) => {
+            this.query.forEach((value: IQueryParam, key: string) => {
                 if (value === null) {
                     paramArr.push(key + '=');
                 } else {
@@ -72,8 +74,21 @@ class WhatUrl {
     }
 }
 
-const parseQueryString = function (qs: string): Map<string, string | number | boolean | null> {
-    return new Map<string, string>();
+const parseQueryString = function (qs: string): IQuery {
+    if (qs.length <= 1) {
+        return new Map<string, IQueryParam>();
+    }
+    const qsMap = new Map<string, IQueryParam>();
+
+    const queryString = qs.startsWith('?') ? qs.substring(1) : qs;
+    const kvPairs = queryString.split('&');
+    
+    kvPairs.forEach((pair) => {
+        const entry = pair.split('=');
+        qsMap.set(entry[0], entry[1] || null);
+    });
+
+    return qsMap;
 };
 
 class WhatUrlBuilder {
@@ -84,7 +99,7 @@ class WhatUrlBuilder {
     private _hostname: string = '';
     private _port: number | null = null;
     private _pathname: string = '';
-    private _query: Map<string, string | number | boolean | null> = new Map();
+    private _query: IQuery = new Map();
     private _hash: string = '';
 
     constructor(whatUrl?: WhatUrl | string) {
@@ -110,7 +125,7 @@ class WhatUrlBuilder {
         }
     }
 
-    addParam(key: string, value: string | number | boolean) {
+    addParam(key: string, value: IQueryParam) {
         this._query.set(key, value);
         return this;
     }
@@ -152,7 +167,7 @@ class WhatUrlBuilder {
         return this;
     }
 
-    setQuery(query: Map<string, string>) {
+    setQuery(query: IQuery) {
         this._query = query;
         return this;
     }
