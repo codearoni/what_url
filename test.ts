@@ -1,10 +1,10 @@
 import { assertEquals, assertThrows } from "https://deno.land/std/testing/asserts.ts";
-import { WhatUrlBuilder } from "./what_url_builder.ts";
+import { WhatUrl } from "./what_url.ts";
 
 Deno.test({
     name: 'Returns correct origin given a protocol',
     fn(): void {
-        const url = new WhatUrlBuilder()
+        const url = new WhatUrl()
             .setProtocol('https:')
             .build();
         
@@ -15,7 +15,7 @@ Deno.test({
 Deno.test({
     name: 'Creates a fully populated url',
     fn(): void {
-        const url = new WhatUrlBuilder()
+        const url = new WhatUrl()
             .setProtocol('https:')
             .setUsername('what')
             .setPassword('1234')
@@ -36,7 +36,7 @@ Deno.test({
     name: 'Parses a fully populated url',
     fn(): void {
         console.log(new URL('https://what:1234@deno.land:8080?x=hello_world&y=&z=true#asdf'));
-        const url = new WhatUrlBuilder('https://what:1234@deno.land:8080?x=hello_world&y=&z=true#asdf')
+        const url = new WhatUrl('https://what:1234@deno.land:8080?x=hello_world&y=&z=true#asdf')
 
         console.log(url);
     }
@@ -46,7 +46,7 @@ Deno.test({
     name: 'Parses a url',
     fn(): void {
         console.log(new URL('https://what:1234@deno.land:8080#asdf'));
-        const url = new WhatUrlBuilder('https://what:1234@deno.land:8080#asdf')
+        const url = new WhatUrl('https://what:1234@deno.land:8080#asdf')
 
         console.log(url);
     }

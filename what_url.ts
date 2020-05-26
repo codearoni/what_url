@@ -214,4 +214,4 @@ class WhatUrlBuilder {
     }
 }
 
-export { WhatUrlBuilder, WhatUrl }
+export { WhatUrlBuilder as WhatUrl }
