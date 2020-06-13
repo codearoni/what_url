@@ -1,6 +1,19 @@
 type IQueryParam = string | number | boolean | null;
 type IQuery = Map<string, IQueryParam>;
 
+const createQueryString = (qsMap: IQuery): string => {
+  const paramArr: Array<string> = [];
+  let urlStr = "?";
+  qsMap.forEach((value: IQueryParam, key: string) => {
+    if (value === null) {
+      paramArr.push(key + "=");
+    } else {
+      paramArr.push(key + "=" + value);
+    }
+  });
+  return urlStr + paramArr.join("&");
+};
+
 class WhatUrl {
   // component parameters
   private _protoSuffix = "//";
@@ -34,6 +47,9 @@ class WhatUrl {
   getParam(key: string) {
     return this.query.get(key);
   }
+  getSearch() {
+    return "?";
+  }
   toString(): string {
     let urlStr = "";
 
@@ -60,16 +76,7 @@ class WhatUrl {
     }
 
     if (this.query.size > 0) {
-      const paramArr: Array<string> = [];
-      urlStr = urlStr + "?";
-      this.query.forEach((value: IQueryParam, key: string) => {
-        if (value === null) {
-          paramArr.push(key + "=");
-        } else {
-          paramArr.push(key + "=" + value);
-        }
-      });
-      urlStr = urlStr + paramArr.join("&");
+      urlStr = urlStr + createQueryString(this.query);
     }
 
     if (this.hash) {
