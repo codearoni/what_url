@@ -1,6 +1,23 @@
 type IQueryParam = string | number | boolean | null;
 type IQuery = Map<string, IQueryParam>;
 
+const parseQueryString = function (qs: string): IQuery {
+  const qsMap = new Map<string, IQueryParam>();
+  if (qs.length <= 1) {
+    return qsMap;
+  }
+
+  const queryString = qs.startsWith("?") ? qs.substring(1) : qs;
+  const kvPairs = queryString.split("&");
+
+  kvPairs.forEach((pair) => {
+    const entry = pair.split("=");
+    qsMap.set(entry[0], entry[1] || null);
+  });
+
+  return qsMap;
+};
+
 const createQueryString = (qsMap: IQuery): string => {
   const paramArr: Array<string> = [];
   let urlStr = "";
@@ -92,23 +109,6 @@ class WhatUrl {
     return urlStr;
   }
 }
-
-const parseQueryString = function (qs: string): IQuery {
-  const qsMap = new Map<string, IQueryParam>();
-  if (qs.length <= 1) {
-    return qsMap;
-  }
-
-  const queryString = qs.startsWith("?") ? qs.substring(1) : qs;
-  const kvPairs = queryString.split("&");
-
-  kvPairs.forEach((pair) => {
-    const entry = pair.split("=");
-    qsMap.set(entry[0], entry[1] || null);
-  });
-
-  return qsMap;
-};
 
 class WhatUrlBuilder {
   private _protocol: string = "";
@@ -232,4 +232,4 @@ class WhatUrlBuilder {
   }
 }
 
-export { WhatUrlBuilder as WhatUrl };
+export { WhatUrlBuilder as WhatUrl, IQuery as QueryParameters };

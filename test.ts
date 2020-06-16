@@ -2,7 +2,7 @@ import {
   assertEquals,
   assertThrows,
 } from "https://deno.land/std/testing/asserts.ts";
-import { WhatUrl } from "./what_url.ts";
+import { WhatUrl, QueryParameters } from "./what_url.ts";
 
 Deno.test({
   name: "Returns correct origin given a protocol",
@@ -289,5 +289,33 @@ Deno.test({
     assertEquals(url.getParam("y"), null);
     assertEquals(url.getParam("z"), "true");
     assertEquals(url.hash, "#asdf");
+  },
+});
+
+Deno.test({
+  name: "Accepts the QueryParameters var as a valid type",
+  fn(): void {
+    const baseUrl = new WhatUrl(
+      "https://what:1234@deno.land:8080",
+    ).build();
+
+    const qs: QueryParameters = new Map();
+    qs.set("x", 1);
+    qs.set("y", 2);
+    qs.set("z", 3);
+    qs.set("a", null);
+
+    const url = new WhatUrl(baseUrl).setQuery(qs).build();
+
+    assertEquals(url.protocol, "https:");
+    assertEquals(url.username, "what");
+    assertEquals(url.password, "1234");
+    assertEquals(url.hostname, "deno.land");
+    assertEquals(url.port, 8080);
+    assertEquals(url.host, "deno.land:8080");
+    assertEquals(url.getParam("x"), 1);
+    assertEquals(url.getParam("y"), 2);
+    assertEquals(url.getParam("z"), 3);
+    assertEquals(url.getParam("a"), null);
   },
 });
