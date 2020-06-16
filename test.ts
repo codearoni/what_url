@@ -12,7 +12,6 @@ Deno.test({
       .build();
 
     assertEquals(url.origin, "https://");
-    console.log(url.protocol);
   },
 });
 
@@ -213,34 +212,49 @@ Deno.test({
       .addParam("x", "hello_world")
       .addParam("y", 2)
       .addParam("z", true)
-      .removeParam("x")
       .setHash("asdf")
       .build();
 
-    //assertEquals(url.getSearch(), undefined);
+    assertEquals(url.getQuery(), "x=hello_world&y=2&z=true");
+  },
+});
+
+Deno.test({
+  name: "Returns the query",
+  fn(): void {
+    const url = new WhatUrl()
+      .setProtocol("https:")
+      .setUsername("what")
+      .setPassword("1234")
+      .setHostname("deno.land")
+      .setPort(8080)
+      .setPathname("path/to/file")
+      .addParam("x", "hello_world")
+      .addParam("y", 2)
+      .addParam("z", true)
+      .setHash("asdf")
+      .build();
+
+    assertEquals(url.getSearch(), "?x=hello_world&y=2&z=true");
   },
 });
 
 Deno.test({
   name: "Parses a fully populated url",
   fn(): void {
-    console.log(
-      new URL("https://what:1234@deno.land:8080?x=hello_world&y=&z=true#asdf"),
-    );
     const url = new WhatUrl(
       "https://what:1234@deno.land:8080?x=hello_world&y=&z=true#asdf",
-    );
+    ).build();
 
-    console.log(url);
-  },
-});
-
-Deno.test({
-  name: "Parses a url",
-  fn(): void {
-    console.log(new URL("https://what:1234@deno.land:8080#asdf"));
-    const url = new WhatUrl("https://what:1234@deno.land:8080#asdf");
-
-    console.log(url);
+    assertEquals(url.protocol, "https:");
+    assertEquals(url.username, "what");
+    assertEquals(url.password, "1234");
+    assertEquals(url.hostname, "deno.land");
+    assertEquals(url.port, 8080);
+    assertEquals(url.host, "deno.land:8080");
+    assertEquals(url.getParam("x"), "hello_world");
+    assertEquals(url.getParam("y"), null);
+    assertEquals(url.getParam("z"), "true");
+    assertEquals(url.hash, "#asdf");
   },
 });

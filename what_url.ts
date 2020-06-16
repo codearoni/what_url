@@ -3,7 +3,7 @@ type IQuery = Map<string, IQueryParam>;
 
 const createQueryString = (qsMap: IQuery): string => {
   const paramArr: Array<string> = [];
-  let urlStr = "?";
+  let urlStr = "";
   qsMap.forEach((value: IQueryParam, key: string) => {
     if (value === null) {
       paramArr.push(key + "=");
@@ -47,8 +47,11 @@ class WhatUrl {
   getParam(key: string) {
     return this.query.get(key);
   }
+  getQuery() {
+    return createQueryString(this.query);
+  }
   getSearch() {
-    return "?";
+    return "?" + createQueryString(this.query);
   }
   toString(): string {
     let urlStr = "";
@@ -76,7 +79,7 @@ class WhatUrl {
     }
 
     if (this.query.size > 0) {
-      urlStr = urlStr + createQueryString(this.query);
+      urlStr = urlStr + "?" + createQueryString(this.query);
     }
 
     if (this.hash) {
