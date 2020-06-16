@@ -51,7 +51,10 @@ class WhatUrl {
     return createQueryString(this.query);
   }
   getSearch() {
-    return "?" + createQueryString(this.query);
+    return "?" + this.getQuery();
+  }
+  getPath() {
+    return this.pathname + this.getSearch();
   }
   toString(): string {
     let urlStr = "";

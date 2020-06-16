@@ -220,7 +220,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "Returns the query",
+  name: "Returns the search",
   fn(): void {
     const url = new WhatUrl()
       .setProtocol("https:")
@@ -236,6 +236,26 @@ Deno.test({
       .build();
 
     assertEquals(url.getSearch(), "?x=hello_world&y=2&z=true");
+  },
+});
+
+Deno.test({
+  name: "Returns the path",
+  fn(): void {
+    const url = new WhatUrl()
+      .setProtocol("https:")
+      .setUsername("what")
+      .setPassword("1234")
+      .setHostname("deno.land")
+      .setPort(8080)
+      .setPathname("path/to/file")
+      .addParam("x", "hello_world")
+      .addParam("y", 2)
+      .addParam("z", true)
+      .setHash("asdf")
+      .build();
+
+    assertEquals(url.getPath(), "path/to/file?x=hello_world&y=2&z=true");
   },
 });
 
