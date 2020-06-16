@@ -1,2 +1,1 @@
-export const whatUrl = () => {
-};
+export { WhatUrl } from "./what_url.ts";
