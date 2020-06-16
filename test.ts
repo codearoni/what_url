@@ -16,6 +16,19 @@ Deno.test({
 });
 
 Deno.test({
+  name: "Returns correct origin given a protocol and host",
+  fn(): void {
+    const url = new WhatUrl()
+      .setProtocol("https:")
+      .setHostname("deno.land")
+      .setPort(8000)
+      .build();
+
+    assertEquals(url.origin, "https://deno.land:8000");
+  },
+});
+
+Deno.test({
   name: "Returns an auth with no password",
   fn(): void {
     const url = new WhatUrl()
@@ -193,7 +206,7 @@ Deno.test({
       .build();
 
     assertEquals(
-      url.toString(),
+      url.getHref(),
       "https://what:1234@deno.land:8080?x=hello_world&y=2&z=true#asdf",
     );
   },

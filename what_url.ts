@@ -40,9 +40,9 @@ class WhatUrl {
     this.query = whatUrlBuilder.query;
     this.hash = whatUrlBuilder.hash;
     // calculated parameters
-    this.origin = this.protocol + this._protoSuffix;
     this.auth = this.username + (this.password ? ":" + this.password : "");
     this.host = this.hostname + (this.port ? ":" + this.port : "");
+    this.origin = this.protocol + this._protoSuffix + this.host;
   }
   getParam(key: string) {
     return this.query.get(key);
@@ -56,7 +56,7 @@ class WhatUrl {
   getPath() {
     return this.pathname + this.getSearch();
   }
-  toString(): string {
+  getHref(): string {
     let urlStr = "";
 
     if (this.protocol) {
