@@ -36,7 +36,7 @@ import { WhatUrl, QueryParameters } from "https://github.com/codearoni/what_url/
       .setPathname("/path/to/endpoint")
       .build();
     
-    console.log(url.getHref()); // => https://deno.land/path/to/endpoint
+    console.log(url.getHref()); // https://deno.land/path/to/endpoint
 ```
 
 #### Build a WhatUrl given an existing string
@@ -45,11 +45,20 @@ import { WhatUrl, QueryParameters } from "https://github.com/codearoni/what_url/
       "https://what:1234@deno.land:8080/path/to/endpoint?x=hello_world&y=&z=true#asdf",
     ).build();
 
-    console.log(url.protocol); // => https://
-    console.log(url.user);     // => what
-    console.log(url.password); // => 1234
-    console.log(url.hostname); // => deno.land
-    console.log(url.port);     // => 8080
-    console.log(url.pathname); // => /path/to/endpoint
-    console.log(url.hash);     // => #asdf
+    console.log(url.protocol); // https:
+    console.log(url.user);     // what
+    console.log(url.password); // 1234
+    console.log(url.hostname); // deno.land
+    console.log(url.port);     // 8080
+    console.log(url.pathname); // /path/to/endpoint
+    console.log(url.hash);     // #asdf
+    console.log(url.origin);   // http://deno.land:8080
+    console.log(url.auth);     // what:1234
+    console.log(url.host);     // deno.land:8080
+    // the following properties are calculated when called
+    console.log(url.getQuery());  // x=hello_world&y=&z=true
+    console.log(url.getSearch()); // ?x=hello_world&y=&z=true
+    console.log(url.getPath());   // /path/to/endpoint?x=hello_world&y=&z=true
+    console.log(url.getHref());   // https://what:1234@deno.land:8080/path/to/endpoint?x=hello_world&y=&z=true#asdf
 ```
+
