@@ -36,16 +36,20 @@ import { WhatUrl, QueryParameters } from "https://github.com/codearoni/what_url/
       .setPathname("/path/to/endpoint")
       .build();
     
-    console.log(url.getHref());
-    // => https://deno.land/path/to/endpoint
+    console.log(url.getHref()); // => https://deno.land/path/to/endpoint
 ```
 
 #### Build a WhatUrl given an existing string
 ``` ts
     const url = new WhatUrl(
-      "https://what:1234@deno.land:8080?x=hello_world&y=&z=true#asdf",
+      "https://what:1234@deno.land:8080/path/to/endpoint?x=hello_world&y=&z=true#asdf",
     ).build();
 
-    console.log(url.hostname);
-    // => deno.land
+    console.log(url.protocol); // => https://
+    console.log(url.user);     // => what
+    console.log(url.password); // => 1234
+    console.log(url.hostname); // => deno.land
+    console.log(url.port);     // => 8080
+    console.log(url.pathname); // => /path/to/endpoint
+    console.log(url.hash);     // => #asdf
 ```
