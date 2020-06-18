@@ -1,5 +1,5 @@
 # what url
-> A [whatwg url](https://url.spec.whatwg.org/) builder for [deno](https://deno.land/)
+> A [whatwg](https://url.spec.whatwg.org/) url builder for [deno](https://deno.land/)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
