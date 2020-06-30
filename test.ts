@@ -2,7 +2,7 @@ import {
   assertEquals,
   assertThrows,
 } from "https://deno.land/std/testing/asserts.ts";
-import { WhatUrl, QueryParameters } from "./what_url.ts";
+import { WhatUrl, QueryParameters, QueryParam } from "./what_url.ts";
 
 Deno.test({
   name: "Returns correct origin given a protocol",

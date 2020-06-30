@@ -23,7 +23,7 @@
 
 ## Import
 ``` ts
-import { WhatUrl, QueryParameters } from "https://github.com/codearoni/what_url/blob/master/mod.ts";
+import { WhatUrl, QueryParameters, QueryParam } from "https://github.com/codearoni/what_url/blob/master/mod.ts";
 ```
 
 ## Usage
@@ -86,4 +86,42 @@ const url = new WhatUrl(
 
 const param = url.getParam("y");
 console.log(param); // check123
+```
+
+#### Create different urls with the same query string
+```ts
+const queryMap: QueryParameters = new Map<string, QueryParam>();
+queryMap.set("a", 1);
+queryMap.set("b", "asdf");
+queryMap.set("c", null);
+
+const urlA = new WhatUrl()
+  .setProtocol("https:")
+  .setHostname("subdomain.example.com")
+  .setPort(3000)
+  .setQuery(queryMap)
+  .build();
+
+const urlB = new WhatUrl()
+  .setProtocol("https:")
+  .setHostname("deno.land")
+  .setPort(4000)
+  .setQuery(queryMap)
+  .build();
+
+const urlC = new WhatUrl()
+  .setProtocol("https:")
+  .setHostname("some.site.net")
+  .setPort(5000)
+  .setQuery(queryMap)
+  .build();
+
+console.log(urlA.getHref()); // https://subdomain.example.com:3000?a=1&b=asdf&c=
+console.log(urlB.getHref()); // https://deno.land:4000?a=1&b=asdf&c=
+console.log(urlC.getHref()); // https://some.site.net:5000?a=1&b=asdf&c=
+```
+
+#### Add query params during build phase
+```ts
+
 ```

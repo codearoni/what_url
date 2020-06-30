@@ -229,4 +229,8 @@ class WhatUrlBuilder {
   }
 }
 
-export { WhatUrlBuilder as WhatUrl, IQuery as QueryParameters };
+export {
+  WhatUrlBuilder as WhatUrl,
+  IQuery as QueryParameters,
+  IQueryParam as QueryParam,
+};
