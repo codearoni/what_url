@@ -228,7 +228,7 @@ Deno.test({
       .setHash("asdf")
       .build();
 
-    assertEquals(url.getQuery(), "x=hello_world&y=2&z=true");
+    assertEquals(url.query, "x=hello_world&y=2&z=true");
   },
 });
 
@@ -248,7 +248,7 @@ Deno.test({
       .setHash("asdf")
       .build();
 
-    assertEquals(url.getSearch(), "?x=hello_world&y=2&z=true");
+    assertEquals(url.search, "?x=hello_world&y=2&z=true");
   },
 });
 
@@ -268,7 +268,7 @@ Deno.test({
       .setHash("asdf")
       .build();
 
-    assertEquals(url.getPath(), "path/to/file?x=hello_world&y=2&z=true");
+    assertEquals(url.path, "path/to/file?x=hello_world&y=2&z=true");
   },
 });
 

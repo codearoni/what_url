@@ -40,12 +40,15 @@ class WhatUrl {
   readonly hostname: string;
   readonly port: number | null;
   readonly pathname: string;
-  readonly query: IQuery;
+  readonly _query: IQuery;
   readonly hash: string;
   // calculated parameters
   readonly origin: string;
   readonly auth: string;
   readonly host: string;
+  readonly query: string;
+  readonly search: string;
+  readonly path: string;
   constructor(whatUrlBuilder: WhatUrlBuilder) {
     // component parameters
     this.protocol = whatUrlBuilder.protocol;
@@ -54,24 +57,18 @@ class WhatUrl {
     this.hostname = whatUrlBuilder.hostname;
     this.port = whatUrlBuilder.port;
     this.pathname = whatUrlBuilder.pathname;
-    this.query = whatUrlBuilder.query;
+    this._query = whatUrlBuilder.query;
     this.hash = whatUrlBuilder.hash;
     // calculated parameters
     this.auth = this.username + (this.password ? ":" + this.password : "");
     this.host = this.hostname + (this.port ? ":" + this.port : "");
     this.origin = this.protocol + this._protoSuffix + this.host;
+    this.query = createQueryString(this._query);
+    this.search = "?" + this.query;
+    this.path = this.pathname + this.search;
   }
   getParam(key: string) {
-    return this.query.get(key);
-  }
-  getQuery() {
-    return createQueryString(this.query);
-  }
-  getSearch() {
-    return "?" + this.getQuery();
-  }
-  getPath() {
-    return this.pathname + this.getSearch();
+    return this._query.get(key);
   }
   getHref(): string {
     let urlStr = "";
@@ -98,8 +95,8 @@ class WhatUrl {
       urlStr = urlStr + ":" + this.port;
     }
 
-    if (this.query.size > 0) {
-      urlStr = urlStr + "?" + createQueryString(this.query);
+    if (this._query.size > 0) {
+      urlStr = urlStr + this.search;
     }
 
     if (this.hash) {
@@ -128,7 +125,7 @@ class WhatUrlBuilder {
       this._hostname = whatUrl.hostname;
       this._port = whatUrl.port;
       this._pathname = whatUrl.pathname;
-      this._query = whatUrl.query;
+      this._query = whatUrl._query;
       this._hash = whatUrl.hash;
     } else if (typeof whatUrl === "string") {
       const parsedUrl = new URL(whatUrl);
