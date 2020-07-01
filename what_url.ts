@@ -1,8 +1,8 @@
 type IQueryParam = string | number | boolean | null;
-type IQuery = Map<string, IQueryParam>;
+type IQuery = Map<string, string>;
 
 const parseQueryString = function (qs: string): IQuery {
-  const qsMap = new Map<string, IQueryParam>();
+  const qsMap = new Map<string, string>();
   if (qs.length <= 1) {
     return qsMap;
   }
@@ -12,7 +12,7 @@ const parseQueryString = function (qs: string): IQuery {
 
   kvPairs.forEach((pair) => {
     const entry = pair.split("=");
-    qsMap.set(entry[0], entry[1] || null);
+    qsMap.set(entry[0], decodeURIComponent(entry[1]) || "");
   });
 
   return qsMap;
@@ -25,7 +25,7 @@ const createQueryString = (qsMap: IQuery): string => {
     if (value === null) {
       paramArr.push(key + "=");
     } else {
-      paramArr.push(key + "=" + value);
+      paramArr.push(key + "=" + encodeURIComponent(value));
     }
   });
   return urlStr + paramArr.join("&");
@@ -117,7 +117,7 @@ class WhatUrlBuilder {
   private _query: IQuery = new Map();
   private _hash: string = "";
 
-  constructor(whatUrl?: WhatUrl | string) {
+  constructor(whatUrl?: WhatUrl | string | null) {
     if (whatUrl instanceof WhatUrl) {
       this._protocol = whatUrl.protocol;
       this._username = whatUrl.username;
@@ -141,7 +141,8 @@ class WhatUrlBuilder {
   }
 
   addParam(key: string, value: IQueryParam) {
-    this._query.set(key, value);
+    const param = (value === null) ? "" : value + "";
+    this._query.set(key, param);
     return this;
   }
 

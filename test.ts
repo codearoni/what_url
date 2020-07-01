@@ -2,7 +2,7 @@ import {
   assertEquals,
   assertThrows,
 } from "https://deno.land/std/testing/asserts.ts";
-import { WhatUrl, QueryParameters, QueryParam } from "./what_url.ts";
+import { WhatUrl, QueryParameters } from "./what_url.ts";
 
 Deno.test({
   name: "Returns correct origin given a protocol",
@@ -143,8 +143,8 @@ Deno.test({
       .build();
 
     assertEquals(url.getParam("x"), "hello_world");
-    assertEquals(url.getParam("y"), 2);
-    assertEquals(url.getParam("z"), true);
+    assertEquals(url.getParam("y"), "2");
+    assertEquals(url.getParam("z"), "true");
   },
 });
 
@@ -286,7 +286,7 @@ Deno.test({
     assertEquals(url.port, 8080);
     assertEquals(url.host, "deno.land:8080");
     assertEquals(url.getParam("x"), "hello_world");
-    assertEquals(url.getParam("y"), null);
+    assertEquals(url.getParam("y"), "");
     assertEquals(url.getParam("z"), "true");
     assertEquals(url.hash, "#asdf");
   },
@@ -300,10 +300,10 @@ Deno.test({
     ).build();
 
     const qs: QueryParameters = new Map();
-    qs.set("x", 1);
-    qs.set("y", 2);
-    qs.set("z", 3);
-    qs.set("a", null);
+    qs.set("x", "1");
+    qs.set("y", "2");
+    qs.set("z", "3");
+    qs.set("a", "");
 
     const url = new WhatUrl(baseUrl).setQuery(qs).build();
 
@@ -313,9 +313,49 @@ Deno.test({
     assertEquals(url.hostname, "deno.land");
     assertEquals(url.port, 8080);
     assertEquals(url.host, "deno.land:8080");
-    assertEquals(url.getParam("x"), 1);
-    assertEquals(url.getParam("y"), 2);
-    assertEquals(url.getParam("z"), 3);
-    assertEquals(url.getParam("a"), null);
+    assertEquals(url.getParam("x"), "1");
+    assertEquals(url.getParam("y"), "2");
+    assertEquals(url.getParam("z"), "3");
+    assertEquals(url.getParam("a"), "");
+  },
+});
+
+Deno.test({
+  name: "Correctly encodes an embedded url within the query string",
+  fn(): void {
+    const baseUrl = new WhatUrl(
+      "https://what:1234@deno.land:8080",
+    ).build();
+
+    const urlToEncode = new WhatUrl(
+      "https://some.url.example.com/path/to/endpoint?a=1&b=2&c=3",
+    ).build();
+
+    const url = new WhatUrl(baseUrl)
+      .addParam("embedded", urlToEncode.getHref())
+      .build();
+
+    assertEquals(
+      url.getHref(),
+      "https://what:1234@deno.land:8080?embedded=https%3A%2F%2Fsome.url.example.com%3Fa%3D1%26b%3D2%26c%3D3",
+    );
+  },
+});
+
+Deno.test({
+  name: "Correctly decodes a url when parsing a query string",
+  fn(): void {
+    const baseUrl = new WhatUrl(
+      "https://what:1234@deno.land:8080?embedded=https%3A%2F%2Fsome.url.example.com%3Fa%3D1%26b%3D2%26c%3D3",
+    ).build();
+
+    const embedUrl = baseUrl.getParam("embedded");
+    const decodedUrl = new WhatUrl(embedUrl)
+      .build();
+
+    assertEquals(
+      decodedUrl.getHref(),
+      "https://some.url.example.com?a=1&b=2&c=3",
+    );
   },
 });
