@@ -40,7 +40,7 @@ class WhatUrl {
   readonly hostname: string;
   readonly port: number | null;
   readonly pathname: string;
-  readonly _query: IQuery;
+  private _query: IQuery;
   readonly hash: string;
   // calculated parameters
   readonly origin: string;
@@ -115,6 +115,7 @@ class WhatUrlBuilder {
   private _port: number | null = null;
   private _pathname: string = "";
   private _query: IQuery = new Map();
+  private _search: string = "";
   private _hash: string = "";
 
   constructor(whatUrl?: WhatUrl | string | null) {
@@ -125,7 +126,8 @@ class WhatUrlBuilder {
       this._hostname = whatUrl.hostname;
       this._port = whatUrl.port;
       this._pathname = whatUrl.pathname;
-      this._query = whatUrl._query;
+      this._search = whatUrl.search;
+      // this._query = whatUrl._query;
       this._hash = whatUrl.hash;
     } else if (typeof whatUrl === "string") {
       const parsedUrl = new URL(whatUrl);

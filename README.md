@@ -63,7 +63,7 @@ console.log(url.getHref());   // https://what:1234@deno.land:8080/path/to/endpoi
 
 #### Build a WhatUrl based on an existing WhatUrl
 ``` ts
-const urlB = new WhatUrl()
+const urlA = new WhatUrl()
   .setProtocol("https:")
   .setHostname("subdomain.example.com")
   .setPort(3000)
