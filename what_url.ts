@@ -1,4 +1,4 @@
-type IQueryParam = string | number | boolean | null;
+type IQueryParam = string | number | boolean | WhatUrl | null;
 type IQuery = Map<string, string>;
 
 const parseQueryString = function (qs: string): IQuery {
@@ -24,6 +24,8 @@ const createQueryString = (qsMap: IQuery): string => {
   qsMap.forEach((value: IQueryParam, key: string) => {
     if (value === null) {
       paramArr.push(key + "=");
+    } else if (value instanceof WhatUrl) {
+      paramArr.push(key + "=" + encodeURIComponent(value.href));
     } else {
       paramArr.push(key + "=" + encodeURIComponent(value));
     }
@@ -49,6 +51,7 @@ class WhatUrl {
   readonly query: string;
   readonly search: string;
   readonly path: string;
+  readonly href: string;
   constructor(whatUrlBuilder: WhatUrlBuilder) {
     // component parameters
     this.protocol = whatUrlBuilder.protocol;
@@ -66,44 +69,45 @@ class WhatUrl {
     this.query = createQueryString(this._query);
     this.search = "?" + this.query;
     this.path = this.pathname + this.search;
+    this.href = this.createHref();
   }
   getParam(key: string) {
     return this._query.get(key);
   }
-  getHref(): string {
-    let urlStr = "";
+  private createHref(): string {
+    let hrefStr = "";
 
     if (this.protocol) {
-      urlStr = this.protocol + this._protoSuffix;
+      hrefStr = this.protocol + this._protoSuffix;
     }
 
     if (this.username) {
-      urlStr = urlStr + this.username;
+      hrefStr = hrefStr + this.username;
 
       if (this.password) {
-        urlStr = urlStr + ":" + this.password;
+        hrefStr = hrefStr + ":" + this.password;
       }
 
-      urlStr = urlStr + "@";
+      hrefStr = hrefStr + "@";
     }
 
     if (this.hostname) {
-      urlStr = urlStr + this.hostname;
+      hrefStr = hrefStr + this.hostname;
     }
 
     if (this.port) {
-      urlStr = urlStr + ":" + this.port;
+      hrefStr = hrefStr + ":" + this.port;
     }
 
     if (this._query.size > 0) {
-      urlStr = urlStr + this.search;
+      hrefStr = hrefStr + this.search;
     }
 
     if (this.hash) {
-      urlStr = urlStr + "#" + this.hash;
+      hrefStr = hrefStr + "#" + this.hash;
     }
 
-    return urlStr;
+    return hrefStr;
   }
 }
 

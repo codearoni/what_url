@@ -206,7 +206,7 @@ Deno.test({
       .build();
 
     assertEquals(
-      url.getHref(),
+      url.href,
       "https://what:1234@deno.land:8080?x=hello_world&y=2&z=true#asdf",
     );
   },
@@ -332,11 +332,11 @@ Deno.test({
     ).build();
 
     const url = new WhatUrl(baseUrl)
-      .addParam("embedded", urlToEncode.getHref())
+      .addParam("embedded", urlToEncode.href)
       .build();
 
     assertEquals(
-      url.getHref(),
+      url.href,
       "https://what:1234@deno.land:8080?embedded=https%3A%2F%2Fsome.url.example.com%3Fa%3D1%26b%3D2%26c%3D3",
     );
   },
@@ -354,7 +354,7 @@ Deno.test({
       .build();
 
     assertEquals(
-      decodedUrl.getHref(),
+      decodedUrl.href,
       "https://some.url.example.com?a=1&b=2&c=3",
     );
   },
