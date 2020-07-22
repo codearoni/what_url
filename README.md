@@ -58,7 +58,7 @@ console.log(url.hash);        // #asdf
 console.log(url.origin);      // http://deno.land:8080
 console.log(url.auth);        // what:1234
 console.log(url.host);        // deno.land:8080
-console.log(url.href);   // https://what:1234@deno.land:8080/path/to/endpoint?x=hello_world&y=&z=true#asdf
+console.log(url.href);        // https://what:1234@deno.land:8080/path/to/endpoint?x=hello_world&y=&z=true#asdf
 ```
 
 #### Build a WhatUrl based on an existing WhatUrl
