@@ -207,7 +207,7 @@ Deno.test({
 
     assertEquals(
       url.href,
-      "https://what:1234@deno.land:8080?x=hello_world&y=2&z=true#asdf",
+      "https://what:1234@deno.land:8080/path/to/file?x=hello_world&y=2&z=true#asdf",
     );
   },
 });
@@ -337,7 +337,7 @@ Deno.test({
 
     assertEquals(
       url.href,
-      "https://what:1234@deno.land:8080?embedded=https%3A%2F%2Fsome.url.example.com%3Fa%3D1%26b%3D2%26c%3D3",
+      "https://what:1234@deno.land:8080/?embedded=https%3A%2F%2Fsome.url.example.com%2Fpath%2Fto%2Fendpoint%3Fa%3D1%26b%3D2%26c%3D3",
     );
   },
 });
@@ -355,7 +355,37 @@ Deno.test({
 
     assertEquals(
       decodedUrl.href,
-      "https://some.url.example.com?a=1&b=2&c=3",
+      "https://some.url.example.com/?a=1&b=2&c=3",
+    );
+  },
+});
+
+Deno.test({
+  name: "Marshals a given query param of type WhatUrl into an encoded string",
+  fn(): void {
+    const embeddedUrl = new WhatUrl()
+      .setProtocol("https:")
+      .setUsername("what")
+      .setPassword("1234")
+      .setHostname("deno.land")
+      .setPort(8080)
+      .setPathname("path/to/file")
+      .addParam("x", "hello_world")
+      .addParam("y", 2)
+      .addParam("z", true)
+      .setHash("asdf")
+      .build();
+
+    const baseUrl = new WhatUrl()
+      .setProtocol("https:")
+      .setHostname("some.site.net")
+      .setPathname("/endpoint")
+      .addParam("embedUrl", embeddedUrl)
+      .build();
+
+    assertEquals(
+      baseUrl.href,
+      "https://some.site.net/endpoint?embedUrl=https%3A%2F%2Fwhat%3A1234%40deno.land%3A8080%2Fpath%2Fto%2Ffile%3Fx%3Dhello_world%26y%3D2%26z%3Dtrue%23asdf",
     );
   },
 });

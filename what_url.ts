@@ -99,6 +99,11 @@ class WhatUrl {
       hrefStr = hrefStr + ":" + this.port;
     }
 
+    if (this.pathname) {
+      hrefStr = hrefStr +
+        (this.pathname.startsWith("/") ? this.pathname : "/" + this.pathname);
+    }
+
     if (this._query.size > 0) {
       hrefStr = hrefStr + this.search;
     }
@@ -147,7 +152,9 @@ class WhatUrlBuilder {
   }
 
   addParam(key: string, value: IQueryParam) {
-    const param = (value === null) ? "" : value + "";
+    const param = (value === null)
+      ? ""
+      : (value instanceof WhatUrl ? value.href : value + "");
     this._query.set(key, param);
     return this;
   }
