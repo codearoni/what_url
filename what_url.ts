@@ -40,7 +40,7 @@ class WhatUrl {
   readonly username: string;
   readonly password: string;
   readonly hostname: string;
-  readonly port: number | null;
+  readonly port: string;
   readonly pathname: string;
   private _query: IQuery;
   readonly hash: string;
@@ -121,7 +121,7 @@ class WhatUrlBuilder {
   private _username: string = "";
   private _password: string = "";
   private _hostname: string = "";
-  private _port: number | null = null;
+  private _port: string = "";
   private _pathname: string = "";
   private _query: IQuery = new Map();
   private _search: string = "";
@@ -136,7 +136,6 @@ class WhatUrlBuilder {
       this._port = whatUrl.port;
       this._pathname = whatUrl.pathname;
       this._search = whatUrl.search;
-      // this._query = whatUrl._query;
       this._hash = whatUrl.hash;
     } else if (typeof whatUrl === "string") {
       const parsedUrl = new URL(whatUrl);
@@ -144,8 +143,9 @@ class WhatUrlBuilder {
       this._username = parsedUrl.username;
       this._password = parsedUrl.password;
       this._hostname = parsedUrl.hostname;
-      this._port = parseInt(parsedUrl.port, 10);
+      this._port = parsedUrl.port;
       this._pathname = parsedUrl.pathname;
+      this._search = parsedUrl.search;
       this._query = parseQueryString(parsedUrl.search);
       this._hash = parsedUrl.hash;
     }
@@ -186,8 +186,8 @@ class WhatUrlBuilder {
     return this;
   }
 
-  setPort(port: number) {
-    this._port = port;
+  setPort(port: string | number) {
+    this._port = (typeof port === "number") ? port.toString() : port;
     return this;
   }
 

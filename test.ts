@@ -283,7 +283,7 @@ Deno.test({
     assertEquals(url.username, "what");
     assertEquals(url.password, "1234");
     assertEquals(url.hostname, "deno.land");
-    assertEquals(url.port, 8080);
+    assertEquals(url.port, "8080");
     assertEquals(url.host, "deno.land:8080");
     assertEquals(url.getParam("x"), "hello_world");
     assertEquals(url.getParam("y"), "");
@@ -311,7 +311,7 @@ Deno.test({
     assertEquals(url.username, "what");
     assertEquals(url.password, "1234");
     assertEquals(url.hostname, "deno.land");
-    assertEquals(url.port, 8080);
+    assertEquals(url.port, "8080");
     assertEquals(url.host, "deno.land:8080");
     assertEquals(url.getParam("x"), "1");
     assertEquals(url.getParam("y"), "2");
@@ -403,5 +403,18 @@ Deno.test({
       embeddedUrl,
       "https://what:1234@deno.land:8080/path/to/file?x=hello_world&y=2&z=true#asdf",
     );
+  },
+});
+
+Deno.test({
+  name: "URL SEARCH PARAMS",
+  fn(): void {
+    const baseUrl = new WhatUrl(
+      "https://some.site.net/endpoint?a=&b=2&c=asdf&embedUrl=https%3A%2F%2Fwhat%3A1234%40deno.land%3A8080%2Fpath%2Fto%2Ffile%3Fx%3Dhello_world%26y%3D2%26z%3Dtrue%23asdf",
+    ).build();
+
+    const url = new URL(baseUrl.href);
+
+    console.log(typeof url.searchParams.get("a"));
   },
 });
