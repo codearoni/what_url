@@ -121,7 +121,17 @@ console.log(urlB.href); // https://deno.land:4000?a=1&b=asdf&c=
 console.log(urlC.href); // https://some.site.net:5000?a=1&b=asdf&c=
 ```
 
-#### Add query params during build phase
+#### Add a given url to the query string of another url
 ```ts
+const baseUrl = new WhatUrl(
+      "https://what:1234@deno.land:8080",
+    ).build();
 
+const urlInParams = "https://some.url.example.com/path/to/endpoint?a=1&b=2&c=3";
+
+const url = new WhatUrl(baseUrl)
+  .addParam("embedded", urlInParams)
+  .build();
+
+console.log(url.href); // https://what:1234@deno.land:8080/?embedded=https%3A%2F%2Fsome.url.example.com%2Fpath%2Fto%2Fendpoint%3Fa%3D1%26b%3D2%26c%3D3
 ```

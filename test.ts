@@ -389,3 +389,19 @@ Deno.test({
     );
   },
 });
+
+Deno.test({
+  name: "Decodes a url in the query string correctly",
+  fn(): void {
+    const baseUrl = new WhatUrl(
+      "https://some.site.net/endpoint?embedUrl=https%3A%2F%2Fwhat%3A1234%40deno.land%3A8080%2Fpath%2Fto%2Ffile%3Fx%3Dhello_world%26y%3D2%26z%3Dtrue%23asdf",
+    ).build();
+
+    const embeddedUrl = baseUrl.getParam("embedUrl");
+
+    assertEquals(
+      embeddedUrl,
+      "https://what:1234@deno.land:8080/path/to/file?x=hello_world&y=2&z=true#asdf",
+    );
+  },
+});
