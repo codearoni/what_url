@@ -1,0 +1,20 @@
+name: whaturl-ci
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: denolib/setup-deno@master
+        with:
+          deno-version: 1.2.1
+
+      - name: Deno Version
+        run: deno --version
+      - name: Deno Format
+        run: deno fmt --check
+      - name: Deno Test
+        run: deno test -A
