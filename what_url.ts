@@ -123,7 +123,7 @@ class WhatUrlBuilder {
   private _hostname: string = "";
   private _port: string = "";
   private _pathname: string = "";
-  private _query: IQuery = new Map();
+  private _query: IQuery = new Map<string, string>();
   private _search: string = "";
   private _hash: string = "";
 
@@ -245,6 +245,6 @@ class WhatUrlBuilder {
 
 export {
   WhatUrlBuilder as WhatUrl,
-  IQuery as QueryParameters,
+  IQuery as QueryParams,
   IQueryParam as QueryParam,
 };

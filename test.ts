@@ -2,7 +2,7 @@ import {
   assertEquals,
   assertThrows,
 } from "https://deno.land/std/testing/asserts.ts";
-import { WhatUrl, QueryParameters } from "./what_url.ts";
+import { WhatUrl, QueryParams, QueryParam } from "./what_url.ts";
 
 Deno.test({
   name: "Returns correct origin given a protocol",
@@ -299,7 +299,7 @@ Deno.test({
       "https://what:1234@deno.land:8080",
     ).build();
 
-    const qs: QueryParameters = new Map();
+    const qs: QueryParams = new Map();
     qs.set("x", "1");
     qs.set("y", "2");
     qs.set("z", "3");
@@ -407,14 +407,41 @@ Deno.test({
 });
 
 Deno.test({
-  name: "URL SEARCH PARAMS",
+  name: "Retrieves an embedded url from the query string of another url",
   fn(): void {
     const baseUrl = new WhatUrl(
       "https://some.site.net/endpoint?a=&b=2&c=asdf&embedUrl=https%3A%2F%2Fwhat%3A1234%40deno.land%3A8080%2Fpath%2Fto%2Ffile%3Fx%3Dhello_world%26y%3D2%26z%3Dtrue%23asdf",
     ).build();
 
-    const url = new URL(baseUrl.href);
+    const embeddedUrl = baseUrl.getParam("embedUrl");
 
-    console.log(typeof url.searchParams.get("a"));
+    const parsedUrl = new WhatUrl(embeddedUrl).build();
+
+    assertEquals(parsedUrl.getParam("x"), "hello_world");
+  },
+});
+
+Deno.test({
+  name: ".addParam sets values to strings correctly.",
+  fn(): void {
+    const numParam: QueryParam = 1;
+    const stringParam: QueryParam = "hello_world";
+    const boolParam: QueryParam = true;
+    const nullParam: QueryParam = null;
+
+    const urlA = new WhatUrl()
+      .setProtocol("https:")
+      .setHostname("subdomain.example.com")
+      .setPort(3000)
+      .addParam("a", numParam)
+      .addParam("b", stringParam)
+      .addParam("c", boolParam)
+      .addParam("d", nullParam)
+      .build();
+
+    assertEquals(
+      urlA.href,
+      "https://subdomain.example.com:3000?a=1&b=hello_world&c=true&d=",
+    );
   },
 });
