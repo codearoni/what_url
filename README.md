@@ -3,7 +3,7 @@
 > A [whatwg](https://url.spec.whatwg.org/) url builder for
 > [deno](https://deno.land/)
 
-![whaturl-ci](https://github.com/codearoni/what_url/workflows/whaturl-ci/badge.svg?branch=master)
+[![Build Status](https://www.travis-ci.com/codearoni/what_url.svg?branch=master)](https://www.travis-ci.com/codearoni/what_url)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
