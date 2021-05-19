@@ -1,1 +1,1 @@
-export { WhatUrl, QueryParam } from "./what_url.ts";
+export { WhatUrl, QueryParam, QueryParams } from "./what_url.ts";
